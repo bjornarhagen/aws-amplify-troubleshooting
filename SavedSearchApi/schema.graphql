@@ -1,0 +1,47 @@
+type SavedSearch @model {
+  id: ID!
+  searchParams: SearchParams!
+  notificationType: [NotificationType]
+  notificationFrequency: NotificationFrequency!
+  notificationWhenDay: DayOfTheWeek
+  notificationWhenTime: AWSTime
+  archived: AWSTime
+}
+
+type SearchParams {
+  searchString: String!
+  searchType: SearchType!
+  dateRangeFromStart: AWSDateTime
+  dateRangeFromEnd: AWSDateTime
+  dateRangeToStart: AWSDateTime
+  dateRangeToEnd: AWSDateTime
+}
+
+enum DayOfTheWeek {
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THRUSDAY
+  FRIDAY
+  SATURDAY
+  SUNDAY
+}
+
+enum NotificationType {
+  PUSH
+  SMS
+  EMAIL
+}
+
+enum NotificationFrequency {
+  NONE
+  IMMEDIATELY
+  DAILY
+  WEEKLY
+}
+
+enum SearchType {
+  A
+  B
+  C
+}

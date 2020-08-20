@@ -1,0 +1,243 @@
+type SavedSearch {
+  id: ID!
+  searchParams: SearchParams!
+  notificationType: [NotificationType]
+  notificationFrequency: NotificationFrequency!
+  notificationWhenDay: DayOfTheWeek
+  notificationWhenTime: AWSTime
+  archived: AWSTime
+  _version: Int!
+  _deleted: Boolean
+  _lastChangedAt: AWSTimestamp!
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}
+
+type SearchParams {
+  searchString: String!
+  searchType: SearchType!
+  dateRangeFromStart: AWSDateTime
+  dateRangeFromEnd: AWSDateTime
+  dateRangeToStart: AWSDateTime
+  dateRangeToEnd: AWSDateTime
+}
+
+enum DayOfTheWeek {
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THRUSDAY
+  FRIDAY
+  SATURDAY
+  SUNDAY
+}
+
+enum NotificationType {
+  PUSH
+  SMS
+  EMAIL
+}
+
+enum NotificationFrequency {
+  NONE
+  IMMEDIATELY
+  DAILY
+  WEEKLY
+}
+
+enum SearchType {
+  A
+  B
+  C
+}
+
+input SearchParamsInput {
+  searchString: String!
+  searchType: SearchType!
+  dateRangeFromStart: AWSDateTime
+  dateRangeFromEnd: AWSDateTime
+  dateRangeToStart: AWSDateTime
+  dateRangeToEnd: AWSDateTime
+}
+
+enum ModelSortDirection {
+  ASC
+  DESC
+}
+
+type ModelSavedSearchConnection {
+  items: [SavedSearch]
+  nextToken: String
+  startedAt: AWSTimestamp
+}
+
+input ModelStringInput {
+  ne: String
+  eq: String
+  le: String
+  lt: String
+  ge: String
+  gt: String
+  contains: String
+  notContains: String
+  between: [String]
+  beginsWith: String
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+  size: ModelSizeInput
+}
+
+input ModelIDInput {
+  ne: ID
+  eq: ID
+  le: ID
+  lt: ID
+  ge: ID
+  gt: ID
+  contains: ID
+  notContains: ID
+  between: [ID]
+  beginsWith: ID
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+  size: ModelSizeInput
+}
+
+input ModelIntInput {
+  ne: Int
+  eq: Int
+  le: Int
+  lt: Int
+  ge: Int
+  gt: Int
+  between: [Int]
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+}
+
+input ModelFloatInput {
+  ne: Float
+  eq: Float
+  le: Float
+  lt: Float
+  ge: Float
+  gt: Float
+  between: [Float]
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+}
+
+input ModelBooleanInput {
+  ne: Boolean
+  eq: Boolean
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+}
+
+input ModelSizeInput {
+  ne: Int
+  eq: Int
+  le: Int
+  lt: Int
+  ge: Int
+  gt: Int
+  between: [Int]
+}
+
+input ModelNotificationTypeListInput {
+  eq: [NotificationType]
+  ne: [NotificationType]
+  contains: NotificationType
+  notContains: NotificationType
+}
+
+input ModelNotificationFrequencyInput {
+  eq: NotificationFrequency
+  ne: NotificationFrequency
+}
+
+input ModelDayOfTheWeekInput {
+  eq: DayOfTheWeek
+  ne: DayOfTheWeek
+}
+
+input ModelSavedSearchFilterInput {
+  id: ModelIDInput
+  notificationType: ModelNotificationTypeListInput
+  notificationFrequency: ModelNotificationFrequencyInput
+  notificationWhenDay: ModelDayOfTheWeekInput
+  notificationWhenTime: ModelStringInput
+  archived: ModelStringInput
+  and: [ModelSavedSearchFilterInput]
+  or: [ModelSavedSearchFilterInput]
+  not: ModelSavedSearchFilterInput
+}
+
+enum ModelAttributeTypes {
+  binary
+  binarySet
+  bool
+  list
+  map
+  number
+  numberSet
+  string
+  stringSet
+  _null
+}
+
+type Query {
+  syncSavedSearches(filter: ModelSavedSearchFilterInput, limit: Int, nextToken: String, lastSync: AWSTimestamp): ModelSavedSearchConnection
+  getSavedSearch(id: ID!): SavedSearch
+  listSavedSearchs(filter: ModelSavedSearchFilterInput, limit: Int, nextToken: String): ModelSavedSearchConnection
+}
+
+input CreateSavedSearchInput {
+  id: ID
+  searchParams: SearchParamsInput!
+  notificationType: [NotificationType]
+  notificationFrequency: NotificationFrequency!
+  notificationWhenDay: DayOfTheWeek
+  notificationWhenTime: AWSTime
+  archived: AWSTime
+  _version: Int
+}
+
+input UpdateSavedSearchInput {
+  id: ID!
+  searchParams: SearchParamsInput
+  notificationType: [NotificationType]
+  notificationFrequency: NotificationFrequency
+  notificationWhenDay: DayOfTheWeek
+  notificationWhenTime: AWSTime
+  archived: AWSTime
+  _version: Int
+}
+
+input DeleteSavedSearchInput {
+  id: ID
+  _version: Int
+}
+
+type Mutation {
+  createSavedSearch(input: CreateSavedSearchInput!, condition: ModelSavedSearchConditionInput): SavedSearch
+  updateSavedSearch(input: UpdateSavedSearchInput!, condition: ModelSavedSearchConditionInput): SavedSearch
+  deleteSavedSearch(input: DeleteSavedSearchInput!, condition: ModelSavedSearchConditionInput): SavedSearch
+}
+
+input ModelSavedSearchConditionInput {
+  notificationType: ModelNotificationTypeListInput
+  notificationFrequency: ModelNotificationFrequencyInput
+  notificationWhenDay: ModelDayOfTheWeekInput
+  notificationWhenTime: ModelStringInput
+  archived: ModelStringInput
+  and: [ModelSavedSearchConditionInput]
+  or: [ModelSavedSearchConditionInput]
+  not: ModelSavedSearchConditionInput
+}
+
+type Subscription {
+  onCreateSavedSearch: SavedSearch @aws_subscribe(mutations: ["createSavedSearch"])
+  onUpdateSavedSearch: SavedSearch @aws_subscribe(mutations: ["updateSavedSearch"])
+  onDeleteSavedSearch: SavedSearch @aws_subscribe(mutations: ["deleteSavedSearch"])
+}
